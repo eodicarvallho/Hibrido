@@ -2,6 +2,10 @@
     "name": "eodicarvallho/hibrido",
     "description": "cadastro de clientes",
     "require": {
+        "monolog/monolog": "^2.1",
+        "nikic/fast-route": "^1.3",
+        "illuminate/database": "^8.10",
+        "guzzlehttp/guzzle": "^7.2"
     },
     "autoload": {
         "psr-4": {
