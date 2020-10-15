@@ -35,31 +35,37 @@ class ClienteController
 	{
 		self::setRepository();
 		$id = $vars['id'] ?? '';
-		$cliente = self::$repository->getOne($id);
+		$cliente = self::$repository->getOne($id);		
 		if (!$cliente) {
-			return ["Erro" => "Nao foi possivel remover. Cliente nao encontrado"];
+			return ["Erro" => "Nao foi possivel obter. Cliente nao encontrado"];
 		}
 		return $cliente;
 	}
 
 	public static function addCliente($vars = [])
 	{
-		$id   	   =  $_POST['id'] ?? '';
 		$nome 	   =  $_POST['nome'] ?? '';
 		$cpf  	   =  $_POST['cpf'] ?? '';
 		$email     =  $_POST['email'] ?? '';
 		$telefone  =  $_POST['telefone'] ?? '';
-		if (empty($id) || empty($cpf) || empty($telefone) || empty($nome) || empty($email)) {
+		
+		if (empty($cpf) || empty($telefone) || empty($nome) || empty($email)) {
 			return ['error' => 'Forneça id, nome, cpf, email e telefone para fazer a requisicao'];
 		}
+		
 		self::setRepository();
-		$cliente = self::$repository->add([
-			'id' 	    =>  $id,
-			'nome' 	    =>  $nome, 
-			'cpf'	    =>  $cpf,
-			'email'	    =>  $email,
-			'telefone'  =>  $telefone]);
-		return $cliente;
+		
+		$verifica = self::$repository->getCpf($cpf);
+		if (!$verifica) {
+			$cliente = self::$repository->add([
+				'nome' 	    =>  $nome, 
+				'cpf'	    =>  $cpf,
+				'email'	    =>  $email,
+				'telefone'  =>  $telefone]);
+			return $cliente;
+		} else {
+			return ['error' => 'Cliente ja cadastrado'];
+		}
 	}
 
 	public static function editCliente($vars = [])

@@ -26,15 +26,19 @@ class ClienteRepository implements RepositoryInterface
 
 	public function delete($id)
 	{
-		$cliente = Cliente::where('id', $id)->first();
-		$cliente->delete(); 
+		$cliente = Cliente::where('id', $id)->delete();
 	}
 
 	public function getOne($id)
 	{
-	    $cliente = Cliente::where('id', $id)->first();
+	     	$cliente = Cliente::where('id', $id)->first();
 		return $cliente;
 	}
 
+	public function getCpf($cpf)
+	{
+	     	$cliente = Cliente::where('cpf', $cpf)->first();
+		return $cliente;
+	}
 
 }

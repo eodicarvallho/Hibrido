@@ -37,25 +37,27 @@ class ClientesTest extends TestCase
 		$this->assertEquals($data, '{"id":1,"nome":"dieg","email":"dieo","telefone":"89788765544","cpf":"765434589"}');
  	}
  	
-	public function testClientesCreate()
+	public function testClientesCreate() ///clientes/addcliente
 	{
-		$response = $this->http->request('POST', '/api/users', ['form_params' => [
-		    'name' => 'Dan',
-		    'job' => 'Full Stack Dev'
+		$response = $this->http->request('POST', '/clientes/addcliente', ['form_params' => [
+		    'nome' => 'Diego Carvalho',
+		    'cpf' => '05643552590',
+		    'Telefone' => '73988546444',
+		    'email' => 'diego93cs@gmail.com',
 		]]);
 		
 		$data = $response->getBody();
 		$this->assertEquals($data, '{"id":1,"nome":"dieg","email":"dieo","telefone":"89788765544","cpf":"765434589"}');
  	}
  	
-	public function testClientesDelete()
+	public function testClientesDelete() ///cliente/{id}/remove
 	{
 		$response = $this->http->request('GET', '/cliente/1');
 		$data = $response->getBody();
 		$this->assertEquals($data, '{"id":1,"nome":"dieg","email":"dieo","telefone":"89788765544","cpf":"765434589"}');
  	}
  	
-	public function testClientesUpdate()
+	public function testClientesUpdate() ///cliente/{id}/edit
 	{
 		$response = $this->http->request('GET', '/cliente/1');
 		$data = $response->getBody();
