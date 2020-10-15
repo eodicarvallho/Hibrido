@@ -12,22 +12,233 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
 
-</head>
-
-<body>
-
-
-</body>
-<footer>
-
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.10/vue.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/js/materialize.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.20.0/axios.min.js"> </script>
 <script src="/qs.js"></script>
-</footer>
 
+</head>
+
+<body>
+
+<div id="app">
+  <h4 class="head" style="text-align:center;"> Cadastro de clientes da hibrido</h4>
+  <div class="container">
+
+    <table class="table-responsive bordered highlight centered hoverable z-depth-2" v-show="clientes.length">
+      <thead>
+        <tr>
+          <th v-for="column in columns">
+            {{column}}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(cliente,index) in clientes">
+          <td>{{index}}</td>
+          <td>
+            {{cliente.nome}}
+          </td>
+          <td>
+            {{cliente.cpf}}
+          </td>
+          <td>
+            {{cliente.email}}
+          </td>
+          <td>
+            {{cliente.telefone}}
+          </td>
+          <td style="width: 18%;">
+            <a href="#modal" @click="edit(index)" class="btn waves-effect waves-light yellow darken-2"><i class="material-icons">edit</i>
+            </a>
+            <a href="#!" class="btn waves-effect waves-light red darken-2" @click="archive(index)"><i class="material-icons">archive</i>
+            </a>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <div class="input-field">
+              <input placeholder="Nome do cliente" ref="nome" v-model="input.nome" id="nome" type="text">
+              <label for="nome">Nome</label>
+            </div>
+          </td>
+          <td>
+            <div class="input-field">
+              <input placeholder="Placeholder" v-model="input.cpf" id="cpf" type="text">
+              <label for="cpf">CPF</label>
+            </div>
+          </td>
+          <td>
+            <div class="input-field">
+              <input placeholder="Placeholder" v-model="input.email" id="email" type="text">
+              <label for="email">Email</label>
+            </div>
+          </td>
+          <td>
+            <div class="input-field">
+              <input placeholder="Placeholder" v-model="input.telefone" id="telefone" type="text">
+              <label for="telefone">Telefone</label>
+            </div>
+          </td>
+          <td><a href="#!" @click="add" class="btn btn-waves green darken-2"><i class="material-icons">add</i></a></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <table class="table-responsive centered bordered striped highlight z-depth-1 hoverable" v-show="bin.length">
+      <thead>
+        <tr>
+          <th v-for="column in columns">
+            {{column}}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(cliente,index) in bin">
+          <td>{{index}}</td>
+          <td>
+            {{cliente.nome}}
+          </td>
+          <td>
+            {{cliente.cpf}}
+          </td>
+          <td>
+            {{cliente.email}} years
+          </td>
+          <td>
+            {{cliente.telefone}}
+          </td>
+          <td>
+            <a href="#!" @click="restore(index)" class="btn waves-effect waves-light blue darken-2"><i class="material-icons">restore</i>
+            </a>
+            <a href="#!" @click="deplete(index)" class="btn waves-effect waves-light red darken-2"><i class="material-icons">delete</i>
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="modal" class="modal modal-fixed-footer">
+    <div class="modal-content">
+      <h4 class="center-align">Editar</h4>
+      <p class="center-align">Editar Cliente</p>
+      <div class="row">
+        <form class="col s12">
+          <div class="row">
+            <div class="input-field col s6">
+              <input placeholder="John" id="last_name" type="text" v-model="editInput.nome">
+              <label for="last_name">Nome</label>
+            </div>
+            <div class="input-field col s6">
+              <input placeholder="Doe" id="first_name" type="text" v-model="editInput.cpf">
+              <label for="first_name">CPF</label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="input-field col s6">
+              <input placeholder="26" id="edit_email" type="text" v-model="editInput.email">
+              <label for="edit_email">Email</label>
+            </div>
+            <div class="input-field col s6">
+              <input placeholder="Teacher" id="edit_telefone" type="text" v-model="editInput.telefone">
+              <label for="edit_telefone">Telefone</label>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Fechar</a>
+      <a href="#!" @click="update" class="btn waves-effect waves-light"><i class="material-icons">Editar</i></a>
+    </div>
+  </div>
+</div>
+</body>
+<script>
+new Vue({
+  el: '#app',
+  data: {
+    columns: ['ID', 'Nome', 'CPF', 'email', 'Telefone', 'Acoes '],
+    clientes: [{
+      nome: "Diego Carvalho",
+      cpf: "06021456895",
+      email: "diegocarlj!@kd.com",
+      telefone: "7395564121"
+    }],
+    bin: [],
+    input: {
+      nome: "Diego",
+      cpf: "06012548785",
+      email: "diegocarvalho.dev@gmail.com",
+      telefone: "73988556655"
+    },
+    editInput: {
+      nome: "",
+      cpf: "",
+      email: "",
+      telefone: ""
+    }
+  },
+  methods: {
+    //function to add data to table
+    add: function() {
+      this.clientes.push({
+        nome: this.input.nome,
+        cpf: this.input.cpf,
+        email: this.input.email,
+        telefone: this.input.telefone
+      });
+
+      for (var key in this.input) {
+        this.input[key] = '';
+      }
+      this.$refs.nome.focus();
+    },
+    //function to handle data edition
+    edit: function(index) {
+      this.editInput = this.clientes[index];
+      console.log(this.editInput);
+      this.clientes.splice(index, 1);
+    },
+    //function to send data to bin
+    archive: function(index) {
+      this.bin.push(this.clientes[index]);
+      this.clientes.splice(index, 1);
+    },
+    //function to restore data
+    restore: function(index) {
+      this.clientes.push(this.bin[index]);
+      this.bin.splice(index, 1);
+    },
+    //function to update data
+    update: function(){
+      // this.clientes.push(this.editInput);
+       this.clientes.push({
+        nome: this.editInput.nome,
+        cpf: this.editInput.cpf,
+        email: this.editInput.email,
+        telefone: this.editInput.telefone
+      });
+       for (var key in this.editInput) {
+        this.editInput[key] = '';
+      }
+    },
+    //function to defintely delete data 
+    deplete: function(index) {
+      // console.log(this.bin[index]);
+      this.bin.splice(index, 1);
+    }
+  }
+});
+
+
+$(function() {
+  //initialize modal box with jquery
+  $('.modal').modal();
+});
+</script>
 </html>
 
 
