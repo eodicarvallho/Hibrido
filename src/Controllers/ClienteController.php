@@ -43,7 +43,9 @@ class ClienteController {
         $cpf = $_POST['cpf']??'';
         $email = $_POST['email']??'';
         $telefone = $_POST['telefone']??'';
+        
         $validate = new Validate;
+        
         if ($validate->validaCPF($cpf)) {
             if (empty($cpf) || empty($telefone) || empty($nome) || empty($email)) {
                 return ['error' => 'Forneça id, nome, cpf, email e telefone para fazer a requisicao'];
@@ -60,21 +62,23 @@ class ClienteController {
             } //FIM IF EMPTY
             
         } else {
-            return ['error' => 'CPF INVALIDO'];
+            return ['error' => 'Verifique CPF'];
         }
     }
     
     public static function editCliente($vars = []) {
-    
-        $id = $vars['id']??'';
-        $cpf = $_POST['cpf']??'';
-        $telefone = $_POST['telefone']??'';
-        $email = $_POST['email']??'';
-        $nome = $_POST['nome']??'';
-        
+           
         self::setRepository();
         
+        $id = $vars['id'] ?? '';
+        
         $cliente = self::$repository->getOne($id);
+        
+        if (strlen($_POST['cpf']) > 1) { $cpf = $_POST['cpf'];} else  { $cpf = $cliente->cpf;}  
+        if (strlen($_POST['telefone']) > 1) { $telefone = $_POST['telefone'];} else  { $telefone = $cliente->telefone;}  
+        if (strlen($_POST['email']) > 1) { $email = $_POST['email'];} else  { $email = $cliente->email;}  
+        if (strlen($_POST['nome']) > 1) { $nome = $_POST['nome'];} else  { $nome = $cliente->nome;}        
+        
         
         if (!$cliente) {
             return ['error' => 'Não existe um cliente com esse ID'];
