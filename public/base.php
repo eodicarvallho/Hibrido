@@ -35,8 +35,8 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(cliente,index) in clientes">
-          <td>{{index}}</td>
+        <tr v-for="cliente in clientes">
+          <td>{{cliente.id}}</td>
           <td>
             {{cliente.nome}}
           </td>
@@ -50,9 +50,9 @@
             {{cliente.telefone}}
           </td>
           <td style="width: 18%;">
-            <a href="#modal" @click="edit(index)" class="btn waves-effect waves-light yellow darken-2"><i class="material-icons">edit</i>
+            <a href="#modal" @click="edit(cliente.id)" class="btn waves-effect waves-light yellow darken-2"><i class="material-icons">edit</i>
             </a>
-            <a href="#!" class="btn waves-effect waves-light red darken-2" @click="archive(index)"><i class="material-icons">archive</i>
+            <a href="#!" @click="deplete(cliente.id)" class="btn waves-effect waves-light red darken-2"><i class="material-icons">delete</i>
             </a>
           </td>
         </tr>
@@ -82,39 +82,6 @@
             </div>
           </td>
           <td><a href="#!" @click="add" class="btn btn-waves green darken-2"><i class="material-icons">add</i></a></td>
-        </tr>
-      </tbody>
-    </table>
-
-    <table class="table-responsive centered bordered striped highlight z-depth-1 hoverable" v-show="bin.length">
-      <thead>
-        <tr>
-          <th v-for="column in columns">
-            {{column}}
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(cliente,index) in bin">
-          <td>{{index}}</td>
-          <td>
-            {{cliente.nome}}
-          </td>
-          <td>
-            {{cliente.cpf}}
-          </td>
-          <td>
-            {{cliente.email}}
-          </td>
-          <td>
-            {{cliente.telefone}}
-          </td>
-          <td>
-            <a href="#!" @click="restore(index)" class="btn waves-effect waves-light blue darken-2"><i class="material-icons">restore</i>
-            </a>
-            <a href="#!" @click="deplete(index)" class="btn waves-effect waves-light red darken-2"><i class="material-icons">delete</i>
-            </a>
-          </td>
         </tr>
       </tbody>
     </table>
@@ -151,12 +118,18 @@
     </div>
     <div class="modal-footer">
       <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Fechar</a>
-      <a href="#!" @click="update" class="btn waves-effect waves-light"><i class="material-icons">Editar</i></a>
+      <a href="#!" @click="update" class="btn waves-effect waves-light"><i class="material-icons">edit</i></a>
     </div>
   </div>
 </div>
 </body>
 <script>
+const config = {
+  headers: {
+    'Content-Type': 'application/x-www-form-urlencoded'
+  }
+}
+
 new Vue({
   el: '#app',
   data: {
@@ -177,22 +150,50 @@ new Vue({
     }
   },
   mounted () {
-    axios
-      .get('http://localhost:8000/clientes').then((response) => {
+    axios.get('http://localhost:8000/clientes').then((response) => {
+    		this.clientes = response.data.mensagem,
+    		console.log(response.data['status'])
+    		var status = response.data['status'];
+    		
+    if (status == "Erro") {
+    	axios.get('http://localhost:8000/').then((response) => {
     		this.clientes = response.data,
     		console.log(response.data)
-  	})
+    		})
+		}
+		})
+
   },
     //
   methods: {
     //function to add data to table
-    add: function() {
-      this.clientes.push({
+    add: function() {    
+      const requestBody = {
         nome: this.input.nome,
         cpf: this.input.cpf,
         email: this.input.email,
         telefone: this.input.telefone
-      });
+      }
+      
+      url = "/clientes/addcliente"
+      axios.post(url, Qs.stringify(requestBody), config)
+      .then((result) => {
+          if(result.data['status'] == "Erro"){
+          	alert(result.data['mensagem'])
+          } else {
+            //this.clientes.push({
+            //nome: this.input.nome,
+            //cpf: this.input.cpf,
+            //email: this.input.email,
+            //telefone: this.input.telefone
+            //});
+            window.location.reload();
+      }
+          ///console.log(result.data['status'])
+          //alert(result.data);
+      }).catch((err) => {
+          console.log(err)
+      })
 
       for (var key in this.input) {
         this.input[key] = '';
@@ -205,15 +206,10 @@ new Vue({
       console.log(this.editInput);
       this.clientes.splice(index, 1);
     },
-    //function to send data to bin
-    archive: function(index) {
-      this.bin.push(this.clientes[index]);
-      this.clientes.splice(index, 1);
-    },
     //function to restore data
-    restore: function(index) {
+    restore: function(index,id) {
       this.clientes.push(this.bin[index]);
-      this.bin.splice(index, 1);
+      this.bin.splice(index, id);
     },
     //function to update data
     update: function(){
@@ -229,18 +225,23 @@ new Vue({
       }
     },
     //function to defintely delete data 
-    deplete: function(index) {
-      // console.log(this.bin[index]);
-      this.bin.splice(index, 1);
+    deplete: function(id) {
+      url = "/cliente/"+id;
+      axios.delete(url, config)
+      .then((result) => {
+          if(result.data['status'] == "Erro"){
+          	alert(result.data['mensagem'])
+          } else {
+            window.location.reload();
+      }
+          ///console.log(result.data['status'])
+          //alert(result.data);
+      }).catch((err) => {
+          console.log(err)
+      })
     }
   }
 });
-
-const config = {
-  headers: {
-    'Content-Type': 'application/x-www-form-urlencoded'
-  }
-}
 
 $(function() {
   //initialize modal box with jquery

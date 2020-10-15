@@ -11,7 +11,10 @@ class ClienteController {
     public static $repository;
     
     public static function echo () {
-        return "Opa, chegamos na home";
+         return [
+         	  ["nome" => "Exemplo1", "cpf" => "12312312345", "email" => "exemplo1@hibrido.com.br", "telefone" => "07855689885"],
+         	  ["nome" => "Exemplo2", "cpf" => "16546444345", "email" => "exemplo2@hibrido.com.br", "telefone" => "68965454564"]
+         	];
     }
     
     private static function setRepository() {
@@ -23,9 +26,9 @@ class ClienteController {
         self::setRepository();
         $clientes = self::$repository->getAll();
         if (empty(json_decode($clientes, true))) {
-            return ["Erro" => "Nao ha cliente cadastrado"];
+            return ["status" => "Erro", "mensagem" =>  "Nao ha cliente cadastrado"];
         }
-        return $clientes;
+        return ["status" => "Sucesso", "mensagem" => $clientes];
     }
     
     public static function getCliente($vars = []) {
@@ -33,22 +36,22 @@ class ClienteController {
         $id = $vars['id']??'';
         $cliente = self::$repository->getOne($id);
         if (!$cliente) {
-            return ["Erro" => "Nao foi possivel obter. Cliente nao encontrado"];
+            return ["status" => "Erro", "mensagem" => "Nao foi possivel obter. Cliente nao encontrado"];
         }
         return $cliente;
     }
     
     public static function addCliente($vars = []) {
-        $nome = $_POST['nome']??'';
-        $cpf = $_POST['cpf']??'';
-        $email = $_POST['email']??'';
-        $telefone = $_POST['telefone']??'';
+        $nome = $_POST['nome'] ?? '';
+        $cpf = $_POST['cpf'] ?? '';
+        $email = $_POST['email'] ?? '';
+        $telefone = $_POST['telefone'] ?? '';
         
         $validate = new Validate;
         
         if ($validate->validaCPF($cpf)) {
             if (empty($cpf) || empty($telefone) || empty($nome) || empty($email)) {
-                return ['error' => 'Forneça id, nome, cpf, email e telefone para fazer a requisicao'];
+                return ["status" => "Erro", "mensagem" => "Forneça id, nome, cpf, email e telefone para fazer a requisicao"];
             } else {
                 self::setRepository();
                 $verifica = self::$repository->getCpf($cpf);
@@ -56,13 +59,13 @@ class ClienteController {
                     $cliente = self::$repository->add(['nome' => $nome, 'cpf' => $cpf, 'email' => $email, 'telefone' => $telefone]);
                     return $cliente;
                 } else {
-                    return ['error' => 'Cliente ja cadastrado'];
+                    return ["status" => "Erro", "mensagem" => "Cliente ja cadastrado"];
                 } // FIM if (!$verifica)
                 
             } //FIM IF EMPTY
             
         } else {
-            return ['error' => 'Verifique CPF'];
+            return ["status" => "Erro", "mensagem" => "Verifique CPF"];
         }
     }
     
@@ -81,7 +84,7 @@ class ClienteController {
         
         
         if (!$cliente) {
-            return ['error' => 'Não existe um cliente com esse ID'];
+            return ["status" => "Erro", "mensagem" =>  'Não existe um cliente com esse ID'];
         }
         $updated = self::$repository->update($id, 
         [
@@ -102,18 +105,15 @@ class ClienteController {
         $cliente = self::$repository->getOne($id);
         
         if (!$cliente) {
-            return ['error' => 'Não foi possivel remover. Cliente não encontrado'];
+            return ["status" => "Erro", "mensagem" =>  'Não foi possivel remover. Cliente não encontrado'];
         }
         self::$repository->delete($id);
-        return ['data' => 'Cliente removido'];
+        return ["status" => "Sucesso", "mensagem" =>  'Cliente removido'];
     }
     
-    public static function getClienteFromApi($vars = []) {
+    public static function getMock() {
    
-        $id = $vars['id']??'';
-        $request = new Request(API);
-        $response = $request->get('id', ['id' => $id]);
-        return $response;
+        return ["nome" => "exemplo", "telefone" => "73555", "cpf" => "05621444251", "email" => "exemplo@hibrido.com.br"];
     }
 }
 
