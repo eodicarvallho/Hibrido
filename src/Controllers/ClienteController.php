@@ -4,11 +4,16 @@ namespace App\Controllers;
 
 use App\Models\Cliente;
 use App\Services\Request;
-use App\Repositories\ClienteRepository;
+use App\Repositorios\ClienteRepository;
 
 class ClienteController
 {
 	public static $repository; 
+	
+	public static function echo()
+	{
+		echo "Opa, chegamos na home";
+	}
 
 	private static function setRepository()
 	{

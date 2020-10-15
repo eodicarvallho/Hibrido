@@ -1,12 +1,13 @@
 <?php
 
 $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
+    $r->get('/', 'ClienteController@echo');
     $r->get('/clientes', 'ClienteController@getClientes');
     $r->post('/clientes/addcliente', 'ClienteController@addCliente');
     $r->post('/cliente/{id}/edit', 'ClienteController@editCliente');
     $r->delete('/cliente/{id}/remove', 'ClienteController@removeCliente');
     $r->get('/cliente/{id}', 'ClienteController@getCliente');
-    $r->get('/cliente/{id}/fromapi', 'ClienteController@getClienteFromApi');
+    //$r->get('/cliente/{id}/fromapi', 'ClienteController@getClienteFromApi'); //eu ia adicionar uma chamada externa pra alguns testes, mas acho melhor não
 });
 
 // Fetch method and URI from somewhere

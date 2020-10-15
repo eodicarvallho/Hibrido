@@ -8,13 +8,13 @@ class Database
     public function __construct() 
     {
     
-    	$driver = "sqlite"
+    	$driver = "sqlite";
     	
         $capsule = new Capsule;
 	if ($driver == "sqlite") {
 	        $capsule->addConnection([
 		            'driver'       => 'sqlite',
-		            'database'     => 'database.sqlite',
+		            'database'     => DB_SQLITE,
         	]);
         } else {
                 $capsule->addConnection([
