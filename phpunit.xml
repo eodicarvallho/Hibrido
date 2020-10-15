@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="vendor/autoload.php">
-    <testsuites>
-        <testsuite name="REST API Test Suite">
-            <directory suffix=".php">./tests/</directory>
-        </testsuite>
-    </testsuites>
-</phpunit>
+
+     <phpunit bootstrap="vendor/autoload.php"
+            colors="true"
+            verbose="true"
+            stopOnFailure="false">
+        <testsuites>
+            <testsuite name="Iniciando">
+                <directory>tests</directory>
+            </testsuite>
+        </testsuites>
+    </phpunit>
