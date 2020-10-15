@@ -52,6 +52,44 @@ class ClienteController
 
 	public static function editCliente($vars = [])
 	{
+		$id = $vars['id'] ?? '';
+		$cpf = $_POST['cpf'] ?? '';
+		$telefone = $_POST['telefone'] ?? '';
+		$email = $_POST['email'] ?? '';
+		$nome = $_POST['nome'] ?? '';
+		self::setRepository();
+		$cliente = self::$repository->getOne($id);
+		if (!$cliente) {
+			return ['error' => 'Não existe um cliente com esse ID'];
+		}
+
+		$updated = self::$repository->update($id, [
+			'telefone'  => $telefone,
+			'nome'	    => $nome,
+			'cpf'	    =>  $cpf,
+			'email'	    =>  $email
+		]);
+		return self::$repository->getOne($id);
 	}
 
+	public static function removeCliente($vars = [])
+	{
+		self::setRepository();
+		$id = $vars['id'] ?? '';
+		$cliente = self::$repository->getOne($id);
+		if (!$cliente) {
+			return ['error' => 'Não foi possivel remover. Cliente não encontrado'];
+		}
+		self::$repository->delete($id);
+		return ['data' => 'Cliente removido'];
+	}
+
+	public static function getClienteFromApi($vars = [])
+	{
+		$id = $vars['id'] ?? '';
+		$request = new Request(API);
+		$response = $request->get('id', ['id' => $id]);
+		return $response;
+
+	}
 }
