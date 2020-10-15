@@ -12,7 +12,7 @@ class ClienteController
 	
 	public static function echo()
 	{
-		echo "Opa, chegamos na home";
+		return "Opa, chegamos na home";
 	}
 
 	private static function setRepository()
@@ -24,7 +24,11 @@ class ClienteController
 	public static function getClientes($vars = [])
 	{
 		self::setRepository();
-		return $clientes = self::$repository->getAll();
+		$clientes = self::$repository->getAll();
+		if (empty(json_decode($clientes, true))) {
+			return ["Erro" => "Nao ha cliente cadastrado"];
+		}
+		return $clientes;
 	}
 
 	public static function getCliente($vars = [])
@@ -32,6 +36,9 @@ class ClienteController
 		self::setRepository();
 		$id = $vars['id'] ?? '';
 		$cliente = self::$repository->getOne($id);
+		if (!$cliente) {
+			return ["Erro" => "Nao foi possivel remover. Cliente nao encontrado"];
+		}
 		return $cliente;
 	}
 
