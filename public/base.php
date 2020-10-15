@@ -104,7 +104,7 @@
             {{cliente.cpf}}
           </td>
           <td>
-            {{cliente.email}} years
+            {{cliente.email}}
           </td>
           <td>
             {{cliente.telefone}}
@@ -161,12 +161,7 @@ new Vue({
   el: '#app',
   data: {
     columns: ['ID', 'Nome', 'CPF', 'email', 'Telefone', 'Acoes '],
-    clientes: [{
-      nome: "Diego Carvalho",
-      cpf: "06021456895",
-      email: "diegocarlj!@kd.com",
-      telefone: "7395564121"
-    }],
+    clientes: [],
     bin: [],
     input: {
       nome: "Diego",
@@ -181,6 +176,14 @@ new Vue({
       telefone: ""
     }
   },
+  mounted () {
+    axios
+      .get('http://localhost:8000/clientes').then((response) => {
+    		this.clientes = response.data,
+    		console.log(response.data)
+  	})
+  },
+    //
   methods: {
     //function to add data to table
     add: function() {
@@ -233,6 +236,11 @@ new Vue({
   }
 });
 
+const config = {
+  headers: {
+    'Content-Type': 'application/x-www-form-urlencoded'
+  }
+}
 
 $(function() {
   //initialize modal box with jquery
