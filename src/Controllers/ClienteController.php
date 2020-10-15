@@ -77,7 +77,7 @@ class ClienteController {
         
         $cliente = self::$repository->getOne($id);
         
-        if (strlen($_POST['cpf']) > 1) { $cpf = $_POST['cpf'];} else  { $cpf = $cliente->cpf;}  
+        if (strlen($_POST['cpf']) > 1) {$cpf = $_POST['cpf'];} else  { $cpf = $cliente->cpf;}  
         if (strlen($_POST['telefone']) > 1) { $telefone = $_POST['telefone'];} else  { $telefone = $cliente->telefone;}  
         if (strlen($_POST['email']) > 1) { $email = $_POST['email'];} else  { $email = $cliente->email;}  
         if (strlen($_POST['nome']) > 1) { $nome = $_POST['nome'];} else  { $nome = $cliente->nome;}        
@@ -86,15 +86,22 @@ class ClienteController {
         if (!$cliente) {
             return ["status" => "Erro", "mensagem" =>  'Não existe um cliente com esse ID'];
         }
-        $updated = self::$repository->update($id, 
-        [
-		'telefone' => $telefone, 
-		'nome' => $nome, 
-		'cpf' => $cpf, 
-		'email' => $email
-        ]);
         
-        return self::$repository->getOne($id);
+        $validate = new Validate;
+        
+        if ($validate->validaCPF($cpf)) {
+		$updated = self::$repository->update($id, 
+		[
+			'telefone' => $telefone, 
+			'nome' => $nome, 
+			'cpf' => $cpf, 
+			'email' => $email
+		]);
+		
+		return self::$repository->getOne($id);
+	} else {
+		return ["status" => "Erro", "mensagem" => "Verifique CPF"];
+	}
     }
     
     public static function removeCliente($vars = []) {

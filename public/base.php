@@ -95,22 +95,23 @@
         <form class="col s12">
           <div class="row">
             <div class="input-field col s6">
-              <input placeholder="John" id="last_name" type="text" v-model="editInput.nome">
-              <label for="last_name">Nome</label>
+              <input placeholder="id" id="eid" type="hidden" v-model="editInput.id">
+              <input placeholder="Nome" id="enome" type="text" v-model="editInput.nome">
+              <label for="nome">Nome</label>
             </div>
             <div class="input-field col s6">
-              <input placeholder="Doe" id="first_name" type="text" v-model="editInput.cpf">
-              <label for="first_name">CPF</label>
+              <input placeholder="CPF" id="ecpf" type="text" v-model="editInput.cpf">
+              <label for="cpf">CPF</label>
             </div>
           </div>
           <div class="row">
             <div class="input-field col s6">
-              <input placeholder="26" id="edit_email" type="text" v-model="editInput.email">
-              <label for="edit_email">Email</label>
+              <input placeholder="Email" id="eemail" type="text" v-model="editInput.email">
+              <label for="email">Email</label>
             </div>
             <div class="input-field col s6">
-              <input placeholder="Teacher" id="edit_telefone" type="text" v-model="editInput.telefone">
-              <label for="edit_telefone">Telefone</label>
+              <input placeholder="Telefone" id="etelefone" type="text" v-model="editInput.telefone">
+              <label for="telefone">Telefone</label>
             </div>
           </div>
         </form>
@@ -201,10 +202,17 @@ new Vue({
       this.$refs.nome.focus();
     },
     //function to handle data edition
-    edit: function(index) {
-      this.editInput = this.clientes[index];
-      console.log(this.editInput);
-      this.clientes.splice(index, 1);
+    edit: function(id) {
+     axios
+       .get('http://localhost:8000/cliente/'+id).then((response) => {
+    	  this.data = response.data,
+    	  console.log(this.data);
+	      this.editInput.id = this.data.id;
+	      this.editInput.nome = this.data.nome;
+	      this.editInput.cpf = this.data.cpf;
+	      this.editInput.telefone = this.data.telefone;
+	      this.editInput.email = this.data.email;
+    	  })
     },
     //function to restore data
     restore: function(index,id) {
@@ -213,16 +221,37 @@ new Vue({
     },
     //function to update data
     update: function(){
-      // this.clientes.push(this.editInput);
-       this.clientes.push({
+       const requestBodyUpd = {
         nome: this.editInput.nome,
         cpf: this.editInput.cpf,
         email: this.editInput.email,
         telefone: this.editInput.telefone
-      });
+      }
+      
+      console.log(requestBodyUpd);
+      
+      url = "/cliente/"+this.editInput.id;
+          
+     axios
+       .post(url, Qs.stringify(requestBodyUpd), config).then((response) => {
+    	  this.data = response,
+    	  console.log(this.data);
+            this.editInput.id = this.data.id;
+            this.editInput.nome = this.data.nome;
+            this.editInput.cpf = this.data.cpf;
+            this.editInput.telefone = this.data.telefone;
+            this.editInput.email = this.data.email;
+            if(response.data['status'] == "Erro"){
+          	alert(response.data['mensagem']);
+          	window.location.reload();
+            } else {
+            	window.location.reload();
+            }
+    	  })
        for (var key in this.editInput) {
         this.editInput[key] = '';
       }
+      //
     },
     //function to defintely delete data 
     deplete: function(id) {
