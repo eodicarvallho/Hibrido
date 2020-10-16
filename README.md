@@ -5,6 +5,7 @@
 composer install
 
 ##### Caso use windows baixe o sqlite no link abaixo, 
+
 https://www.sqlite.org/download.html
 
 **descomente essas linhas no seu php.ini**
@@ -12,8 +13,11 @@ extension=php_pdo.dll
 extension=php_sqlite.dll
 
 ##### após a conclusão do processo,  dentro da mesma janela, basta executar
+
 php -S localhost:8000 -t public/
+
 ##### feito isso o projeto estará rodando e voce pode acessa-lo em seu navegador através do link :
+
 http://localhost:8000/base.php
 
 
@@ -53,5 +57,6 @@ Aqui temos o repositório do cliente, ele contem os métodos de busca, remoção
 
 Aqui mantemos nossos Helpers, desde validação de CPF até Inicialização do banco de dados e Log.
 Nessa pasta vão todas as funções que podem/vão alterar a aplicação em durante as requisições
+
 ![Tela do sistema](https://i.imgur.com/lNd172X.png)
 
