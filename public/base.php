@@ -131,6 +131,23 @@ const config = {
   }
 }
 
+function verificaNome($data){
+   nome = $data
+   
+   if(nome.match(/^[a-zA-Z\u00C0-\u017F´]+\s+[a-zA-Z\u00C0-\u017F´]{0,}$/) && nome.trim().split(' ').length == 2){
+   }else{
+       alert("nome INVÁLIDO");
+   }
+}
+
+function verificaEmail($data){
+  var er = new RegExp(/^[A-Za-z0-9_\-\.]+@[A-Za-z0-9_\-\.]{2,}\.[A-Za-z0-9]{2,}(\.[A-Za-z0-9])?/);
+
+  var email = $data
+
+  if( email == '' || !er.test(email) ) { alert('Preencha o campo email corretamente'); return false; }
+}
+	
 new Vue({
   el: '#app',
   data: {
@@ -167,7 +184,7 @@ new Vue({
   },
     //
   methods: {
-    //function to add data to table
+
     add: function() {    
       const requestBody = {
         nome: this.input.nome,
@@ -177,6 +194,8 @@ new Vue({
       }
       
       url = "/clientes/addcliente"
+      verificaNome(this.input.nome);
+      verificaEmail(this.input.email);
       axios.post(url, Qs.stringify(requestBody), config)
       .then((result) => {
           if(result.data['status'] == "Erro"){

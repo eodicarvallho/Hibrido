@@ -68,7 +68,7 @@ class ClienteController {
                 $verifica = self::$repository->getCpf($cpf);
                 if (!$verifica) {
                     $cliente = self::$repository->add(['nome' => $nome, 'cpf' => $cpf, 'email' => $email, 'telefone' => $telefone]);
-                    $logger->log("Sucesso : Cliente com ID " . $cliente->id . " cadastrado");
+                    $logger->log("Sucesso : Cliente " . $cliente->nome . " com ID " . $cliente->id . " cadastrado");
                     return $cliente;
                 } else {
                     $logger->log("Erro : Cliente já cadastrado");
